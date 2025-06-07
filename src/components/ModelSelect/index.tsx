@@ -1,7 +1,7 @@
 import { IconAvatarProps, ModelIcon, ProviderIcon } from '@lobehub/icons';
 import { Avatar, Icon, Tag, Tooltip } from '@lobehub/ui';
 import { Typography } from 'antd';
-import { createStyles } from 'antd-style';
+import { createStyles, useResponsive } from 'antd-style';
 import {
   Infinity,
   AtomIcon,
@@ -31,12 +31,12 @@ const useStyles = createStyles(({ css, token }) => ({
     align-items: center;
     justify-content: center;
 
-    width: 20px;
+    width: 20px !important;
     height: 20px;
     border-radius: 4px;
   `,
   token: css`
-    width: 36px;
+    width: 36px !important;
     height: 20px;
     border-radius: 4px;
 
@@ -167,17 +167,20 @@ interface ModelItemRenderProps extends ChatModelCard {
 }
 
 export const ModelItemRender = memo<ModelItemRenderProps>(({ showInfoTag = true, ...model }) => {
+  const { mobile } = useResponsive();
   return (
     <Flexbox
       align={'center'}
       gap={32}
       horizontal
       justify={'space-between'}
-      style={{ overflow: 'hidden', position: 'relative' }}
+      style={{ overflow: 'hidden', position: 'relative', width: mobile ? '80vw' : 'auto' }}
     >
       <Flexbox align={'center'} gap={8} horizontal style={{ overflow: 'hidden' }}>
         <ModelIcon model={model.id} size={20} />
-        <Typography.Text ellipsis>{model.displayName || model.id}</Typography.Text>
+        <Typography.Text style={mobile ? { overflowX: 'auto', whiteSpace: 'nowrap' } : {}}>
+          {model.displayName || model.id}
+        </Typography.Text>
       </Flexbox>
       {showInfoTag && <ModelInfoTags {...model} />}
     </Flexbox>
