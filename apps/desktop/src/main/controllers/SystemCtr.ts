@@ -1,5 +1,5 @@
-import { ElectronAppState } from '@lobechat/electron-client-ipc';
-import { app, systemPreferences } from 'electron';
+import { ElectronAppState, ThemeMode } from '@lobechat/electron-client-ipc';
+import { app, shell, systemPreferences } from 'electron';
 import { macOS } from 'electron-is';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -49,6 +49,11 @@ export default class SystemController extends ControllerModule {
     return systemPreferences.isTrustedAccessibilityClient(true);
   }
 
+  @ipcClientEvent('openExternalLink')
+  openExternalLink(url: string) {
+    return shell.openExternal(url);
+  }
+
   /**
    * 更新应用语言设置
    */
@@ -61,6 +66,11 @@ export default class SystemController extends ControllerModule {
     await this.app.i18n.changeLanguage(locale === 'auto' ? app.getLocale() : locale);
 
     return { success: true };
+  }
+
+  @ipcClientEvent('updateThemeMode')
+  async updateThemeModeHandler(themeMode: ThemeMode) {
+    this.app.browserManager.broadcastToAllWindows('themeChanged', { themeMode });
   }
 
   @ipcServerEvent('getDatabasePath')
