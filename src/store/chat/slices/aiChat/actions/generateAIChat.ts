@@ -1,7 +1,6 @@
 /* eslint-disable sort-keys-fix/sort-keys-fix, typescript-sort-keys/interface */
 // Disable the auto sort key eslint rule to make the code more logic and readable
 import { produce } from 'immer';
-import { template } from 'lodash-es';
 import { StateCreator } from 'zustand/vanilla';
 
 import { LOADING_FLAT, MESSAGE_CANCEL_FLAT } from '@/const/message';
@@ -13,7 +12,7 @@ import { messageService } from '@/services/message';
 import { useAgentStore } from '@/store/agent';
 import { agentChatConfigSelectors, agentSelectors } from '@/store/agent/selectors';
 import { getAgentStoreState } from '@/store/agent/store';
-import { aiModelSelectors } from '@/store/aiInfra';
+import { aiModelSelectors, aiProviderSelectors } from '@/store/aiInfra';
 import { getAiInfraStoreState } from '@/store/aiInfra/store';
 import { chatHelpers } from '@/store/chat/helpers';
 import { ChatStore } from '@/store/chat/store';
@@ -184,7 +183,7 @@ export const generateAIChat: StateCreator<
 
       // if there is no activeTopicId and the feature length is greater than the threshold
       // then create a new topic and active it
-      if (!get().activeTopicId && featureLength >= agentConfig.autoCreateTopicThreshold) {
+      if (!activeTopicId && featureLength >= agentConfig.autoCreateTopicThreshold) {
         // we need to create a temp message for optimistic update
         tempMessageId = get().internal_createTmpMessage(newMessage);
         get().internal_toggleMessageLoading(true, tempMessageId);
@@ -259,15 +258,16 @@ export const generateAIChat: StateCreator<
 
       // check activeTopic and then auto update topic title
       if (newTopicId) {
-        const chats = chatSelectors.activeBaseChats(get());
+        const chats = chatSelectors.getBaseChatsByKey(messageMapKey(activeId, newTopicId))(get());
         await get().summaryTopicTitle(newTopicId, chats);
         return;
       }
 
-      const topic = topicSelectors.currentActiveTopic(get());
+      if (!activeTopicId) return;
+      const topic = topicSelectors.getTopicById(activeTopicId)(get());
 
       if (topic && !topic.title) {
-        const chats = chatSelectors.activeBaseChats(get());
+        const chats = chatSelectors.getBaseChatsByKey(messageMapKey(activeId, topic.id))(get());
         await get().summaryTopicTitle(topic.id, chats);
       }
     };
@@ -299,7 +299,8 @@ export const generateAIChat: StateCreator<
     // create a new array to avoid the original messages array change
     const messages = [...originalMessages];
 
-    const { model, provider, chatConfig } = agentSelectors.currentAgentConfig(getAgentStoreState());
+    const agentStoreState = getAgentStoreState();
+    const { model, provider, chatConfig } = agentSelectors.currentAgentConfig(agentStoreState);
 
     let fileChunks: MessageSemanticSearchChunk[] | undefined;
     let ragQueryId;
@@ -323,7 +324,7 @@ export const generateAIChat: StateCreator<
         chunks,
         userQuery: lastMsg.content,
         rewriteQuery,
-        knowledge: agentSelectors.currentEnabledKnowledge(getAgentStoreState()),
+        knowledge: agentSelectors.currentEnabledKnowledge(agentStoreState),
       });
 
       // 3. add the retrieve context messages to the messages history
@@ -355,14 +356,25 @@ export const generateAIChat: StateCreator<
     if (!assistantId) return;
 
     // 3. place a search with the search working model if this model is not support tool use
+    const aiInfraStoreState = getAiInfraStoreState();
     const isModelSupportToolUse = aiModelSelectors.isModelSupportToolUse(
       model,
       provider!,
-    )(getAiInfraStoreState());
-    const isAgentEnableSearch = agentChatConfigSelectors.isAgentEnableSearch(getAgentStoreState());
+    )(aiInfraStoreState);
+    const isProviderHasBuiltinSearch = aiProviderSelectors.isProviderHasBuiltinSearch(provider!)(
+      aiInfraStoreState,
+    );
+    const isModelHasBuiltinSearch = aiModelSelectors.isModelHasBuiltinSearch(
+      model,
+      provider!,
+    )(aiInfraStoreState);
+    const useModelBuiltinSearch = agentChatConfigSelectors.useModelBuiltinSearch(agentStoreState);
+    const useModelSearch =
+      (isProviderHasBuiltinSearch || isModelHasBuiltinSearch) && useModelBuiltinSearch;
+    const isAgentEnableSearch = agentChatConfigSelectors.isAgentEnableSearch(agentStoreState);
 
-    if (isAgentEnableSearch && !isModelSupportToolUse) {
-      const { model, provider } = agentChatConfigSelectors.searchFCModel(getAgentStoreState());
+    if (isAgentEnableSearch && !useModelSearch && !isModelSupportToolUse) {
+      const { model, provider } = agentChatConfigSelectors.searchFCModel(agentStoreState);
 
       let isToolsCalling = false;
       let isError = false;
@@ -460,10 +472,10 @@ export const generateAIChat: StateCreator<
     }
 
     // 6. summary history if context messages is larger than historyCount
-    const historyCount = agentChatConfigSelectors.historyCount(getAgentStoreState());
+    const historyCount = agentChatConfigSelectors.historyCount(agentStoreState);
 
     if (
-      agentChatConfigSelectors.enableHistoryCount(getAgentStoreState()) &&
+      agentChatConfigSelectors.enableHistoryCount(agentStoreState) &&
       chatConfig.enableCompressHistory &&
       originalMessages.length > historyCount
     ) {
@@ -495,8 +507,6 @@ export const generateAIChat: StateCreator<
     const agentConfig = agentSelectors.currentAgentConfig(getAgentStoreState());
     const chatConfig = agentChatConfigSelectors.currentChatConfig(getAgentStoreState());
 
-    const compiler = template(chatConfig.inputTemplate, { interpolate: /{{([\S\s]+?)}}/g });
-
     // ================================== //
     //   messages uniformly preprocess    //
     // ================================== //
@@ -511,34 +521,17 @@ export const generateAIChat: StateCreator<
       historyCount,
     });
 
-    // 2. replace inputMessage template
-    preprocessMsgs = !chatConfig.inputTemplate
-      ? preprocessMsgs
-      : preprocessMsgs.map((m) => {
-          if (m.role === 'user') {
-            try {
-              return { ...m, content: compiler({ text: m.content }) };
-            } catch (error) {
-              console.error(error);
-
-              return m;
-            }
-          }
-
-          return m;
-        });
-
-    // 3. add systemRole
+    // 2. add systemRole
     if (agentConfig.systemRole) {
       preprocessMsgs.unshift({ content: agentConfig.systemRole, role: 'system' } as ChatMessage);
     }
 
-    // 4. handle max_tokens
+    // 3. handle max_tokens
     agentConfig.params.max_tokens = chatConfig.enableMaxTokens
       ? agentConfig.params.max_tokens
       : undefined;
 
-    // 5. handle reasoning_effort
+    // 4. handle reasoning_effort
     agentConfig.params.reasoning_effort = chatConfig.enableReasoningEffort
       ? agentConfig.params.reasoning_effort
       : undefined;
@@ -552,7 +545,9 @@ export const generateAIChat: StateCreator<
     // to upload image
     const uploadTasks: Map<string, Promise<{ id?: string; url?: string }>> = new Map();
 
-    const historySummary = topicSelectors.currentActiveTopicSummary(get());
+    const historySummary = chatConfig.enableCompressHistory
+      ? topicSelectors.currentActiveTopicSummary(get())
+      : undefined;
     await chatService.createAssistantMessageStream({
       abortController,
       params: {
@@ -677,7 +672,15 @@ export const generateAIChat: StateCreator<
             // if there is no duration, it means the end of reasoning
             if (!duration) {
               duration = Date.now() - thinkingStartAt;
-              internal_toggleChatReasoning(false, messageId, n('generateMessage(end)') as string);
+
+              const isInChatReasoning = chatSelectors.isMessageInChatReasoning(messageId)(get());
+              if (isInChatReasoning) {
+                internal_toggleChatReasoning(
+                  false,
+                  messageId,
+                  n('toggleChatReasoning/false') as string,
+                );
+              }
             }
 
             internal_dispatchMessage({
@@ -695,7 +698,11 @@ export const generateAIChat: StateCreator<
             // if there is no thinkingStartAt, it means the start of reasoning
             if (!thinkingStartAt) {
               thinkingStartAt = Date.now();
-              internal_toggleChatReasoning(true, messageId, n('generateMessage(end)') as string);
+              internal_toggleChatReasoning(
+                true,
+                messageId,
+                n('toggleChatReasoning/true') as string,
+              );
             }
 
             thinking += chunk.text;
