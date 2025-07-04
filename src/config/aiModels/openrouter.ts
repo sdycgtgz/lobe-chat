@@ -1,4 +1,5 @@
 import { AIChatModelCard } from '@/types/aiModel';
+
 // https://openrouter.ai/docs/api-reference/list-available-models
 const openrouterChatModels: AIChatModelCard[] = [
   {
@@ -12,7 +13,6 @@ const openrouterChatModels: AIChatModelCard[] = [
   },
   {
     abilities: {
-      functionCall: true,
       reasoning: true,
     },
     contextWindowTokens: 40_960,
@@ -24,7 +24,6 @@ const openrouterChatModels: AIChatModelCard[] = [
   },
   {
     abilities: {
-      functionCall: true,
       reasoning: true,
     },
     contextWindowTokens: 40_960,
@@ -41,7 +40,6 @@ const openrouterChatModels: AIChatModelCard[] = [
   },
   {
     abilities: {
-      functionCall: true,
       reasoning: true,
     },
     contextWindowTokens: 40_960,
@@ -54,7 +52,6 @@ const openrouterChatModels: AIChatModelCard[] = [
   },
   {
     abilities: {
-      functionCall: true,
       reasoning: true,
     },
     contextWindowTokens: 40_960,
@@ -66,7 +63,6 @@ const openrouterChatModels: AIChatModelCard[] = [
   },
   {
     abilities: {
-      functionCall: true,
       reasoning: true,
     },
     contextWindowTokens: 40_960,
@@ -83,7 +79,6 @@ const openrouterChatModels: AIChatModelCard[] = [
   },
   {
     abilities: {
-      functionCall: true,
       reasoning: true,
     },
     contextWindowTokens: 40_960,
@@ -95,7 +90,6 @@ const openrouterChatModels: AIChatModelCard[] = [
   },
   {
     abilities: {
-      functionCall: true,
       reasoning: true,
     },
     contextWindowTokens: 40_960,
@@ -111,7 +105,6 @@ const openrouterChatModels: AIChatModelCard[] = [
   },
   {
     abilities: {
-      functionCall: true,
       reasoning: true,
     },
     contextWindowTokens: 40_960,
@@ -123,7 +116,6 @@ const openrouterChatModels: AIChatModelCard[] = [
   },
   {
     abilities: {
-      functionCall: true,
       reasoning: true,
     },
     contextWindowTokens: 40_960,
@@ -155,7 +147,7 @@ const openrouterChatModels: AIChatModelCard[] = [
     },
     contextWindowTokens: 32_000,
     description:
-      'THUDM: GLM Z1 Rumination 32B 是 GLM-4-Z1 系列中的 32B 参数深度推理模型，针对需要长时间思考的复杂、开放式任务进行了优化。它建立在 glm-4-32b-0414 的基础上，增加了额外的强化学习阶段和多阶段对齐策略，引入了旨在模拟扩展认知处理的“反思”能力。这包括迭代推理、多跳分析和工具增强的工作流程，例如搜索、检索和引文感知合成。\n\n该模型在研究式写作、比较分析和复杂问答方面表现出色。它支持用于搜索和导航原语（`search`、`click`、`open`、`finish`）的函数调用，从而可以在代理式管道中使用。反思行为由具有基于规则的奖励塑造和延迟决策机制的多轮循环控制，并以 OpenAI 内部对齐堆栈等深度研究框架为基准。此变体适用于需要深度而非速度的场景。',
+      'GLM Z1 Rumination 32B 是 GLM-4-Z1 系列中的 32B 参数深度推理模型，针对需要长时间思考的复杂、开放式任务进行了优化。它建立在 glm-4-32b-0414 的基础上，增加了额外的强化学习阶段和多阶段对齐策略，引入了旨在模拟扩展认知处理的“反思”能力。这包括迭代推理、多跳分析和工具增强的工作流程，例如搜索、检索和引文感知合成。\n\n该模型在研究式写作、比较分析和复杂问答方面表现出色。它支持用于搜索和导航原语（`search`、`click`、`open`、`finish`）的函数调用，从而可以在代理式管道中使用。反思行为由具有基于规则的奖励塑造和延迟决策机制的多轮循环控制，并以 OpenAI 内部对齐堆栈等深度研究框架为基准。此变体适用于需要深度而非速度的场景。',
     displayName: 'GLM Z1 Rumination 32B',
     id: 'thudm/glm-z1-rumination-32b',
     pricing: {
@@ -176,14 +168,153 @@ const openrouterChatModels: AIChatModelCard[] = [
     type: 'chat',
   },
   {
-    abilities: {
-      functionCall: true,
-    },
     contextWindowTokens: 32_000,
     description:
       'GLM-4-9B-0414 是 THUDM 开发的 GLM-4 系列中的 90 亿参数语言模型。GLM-4-9B-0414 使用与其较大的 32B 对应模型相同的强化学习和对齐策略进行训练，相对于其规模实现了高性能，使其适用于仍需要强大语言理解和生成能力的资源受限部署。',
     displayName: 'GLM 4 9B (Free)',
     id: 'thudm/glm-4-9b:free',
+    type: 'chat',
+  },
+  {
+    abilities: {
+      reasoning: true,
+    },
+    contextWindowTokens: 32_768,
+    description:
+      'GLM-Z1-32B-0414 是 GLM-4-32B 的增强推理变体，专为深度数学、逻辑和面向代码的问题解决而构建。它应用扩展强化学习（任务特定和基于通用成对偏好）来提高复杂多步骤任务的性能。与基础 GLM-4-32B 模型相比，Z1 显著提升了结构化推理和形式化领域的能力。\n\n该模型支持通过提示工程强制执行“思考”步骤，并为长格式输出提供改进的连贯性。它针对代理工作流进行了优化，并支持长上下文（通过 YaRN）、JSON 工具调用和用于稳定推理的细粒度采样配置。非常适合需要深思熟虑、多步骤推理或形式化推导的用例。',
+    displayName: 'GLM Z1 32B (Free)',
+    id: 'thudm/glm-z1-32b:free',
+    type: 'chat',
+  },
+  {
+    abilities: {
+      reasoning: true,
+    },
+    contextWindowTokens: 32_000,
+    description:
+      'GLM-Z1-32B-0414 是 GLM-4-32B 的增强推理变体，专为深度数学、逻辑和面向代码的问题解决而构建。它应用扩展强化学习（任务特定和基于通用成对偏好）来提高复杂多步骤任务的性能。与基础 GLM-4-32B 模型相比，Z1 显著提升了结构化推理和形式化领域的能力。\n\n该模型支持通过提示工程强制执行“思考”步骤，并为长格式输出提供改进的连贯性。它针对代理工作流进行了优化，并支持长上下文（通过 YaRN）、JSON 工具调用和用于稳定推理的细粒度采样配置。非常适合需要深思熟虑、多步骤推理或形式化推导的用例。',
+    displayName: 'GLM Z1 32B',
+    id: 'thudm/glm-z1-32b',
+    pricing: {
+      input: 0.24,
+      output: 0.24,
+    },
+    type: 'chat',
+  },
+  {
+    abilities: {
+      reasoning: true,
+    },
+    contextWindowTokens: 32_768,
+    description:
+      'GLM-4-32B-0414 是一个 32B 双语（中英）开放权重语言模型，针对代码生成、函数调用和代理式任务进行了优化。它在 15T 高质量和重推理数据上进行了预训练，并使用人类偏好对齐、拒绝采样和强化学习进一步完善。该模型在复杂推理、工件生成和结构化输出任务方面表现出色，在多个基准测试中达到了与 GPT-4o 和 DeepSeek-V3-0324 相当的性能。',
+    displayName: 'GLM 4 32B (Free)',
+    id: 'thudm/glm-4-32b:free',
+    type: 'chat',
+  },
+  {
+    abilities: {
+      reasoning: true,
+    },
+    contextWindowTokens: 32_000,
+    description:
+      'GLM-4-32B-0414 是一个 32B 双语（中英）开放权重语言模型，针对代码生成、函数调用和代理式任务进行了优化。它在 15T 高质量和重推理数据上进行了预训练，并使用人类偏好对齐、拒绝采样和强化学习进一步完善。该模型在复杂推理、工件生成和结构化输出任务方面表现出色，在多个基准测试中达到了与 GPT-4o 和 DeepSeek-V3-0324 相当的性能。',
+    displayName: 'GLM 4 32B',
+    id: 'thudm/glm-4-32b',
+    pricing: {
+      input: 0.24,
+      output: 0.24,
+    },
+    type: 'chat',
+  },
+  {
+    abilities: {
+      functionCall: true,
+      reasoning: true,
+      vision: true,
+    },
+    contextWindowTokens: 1_048_576,
+    description:
+      'Gemini 2.5 Pro 是 Google 最先进的思维模型，能够对代码、数学和STEM领域的复杂问题进行推理，以及使用长上下文分析大型数据集、代码库和文档。',
+    displayName: 'Gemini 2.5 Pro',
+    id: 'google/gemini-2.5-pro',
+    maxOutput: 65_536,
+    pricing: {
+      input: 1.25,
+      output: 10,
+    },
+    type: 'chat',
+  },
+  {
+    abilities: {
+      functionCall: true,
+      reasoning: true,
+      vision: true,
+    },
+    contextWindowTokens: 1_048_576,
+    description:
+      'Gemini 2.5 Pro Preview 是 Google 最先进的思维模型，能够对代码、数学和STEM领域的复杂问题进行推理，以及使用长上下文分析大型数据集、代码库和文档。',
+    displayName: 'Gemini 2.5 Pro Preview',
+    id: 'google/gemini-2.5-pro-preview',
+    maxOutput: 65_536,
+    pricing: {
+      input: 1.25,
+      output: 10,
+    },
+    type: 'chat',
+  },
+  {
+    abilities: {
+      functionCall: true,
+      reasoning: true,
+      vision: true,
+    },
+    contextWindowTokens: 1_048_576,
+    description:
+      'Gemini 2.5 Flash 是 Google 最先进的主力模型，专为高级推理、编码、数学和科学任务而设计。它包含内置的“思考”能力，使其能够提供具有更高准确性和细致上下文处理的响应。\n\n注意：此模型有两个变体：思考和非思考。输出定价根据思考能力是否激活而有显著差异。如果您选择标准变体（不带“:thinking”后缀），模型将明确避免生成思考令牌。\n\n要利用思考能力并接收思考令牌，您必须选择“:thinking”变体，这将产生更高的思考输出定价。\n\n此外，Gemini 2.5 Flash 可通过“推理最大令牌数”参数进行配置，如文档中所述 (https://openrouter.ai/docs/use-cases/reasoning-tokens#max-tokens-for-reasoning)。',
+    displayName: 'Gemini 2.5 Flash',
+    id: 'google/gemini-2.5-flash',
+    maxOutput: 65_535,
+    pricing: {
+      input: 0.15,
+      output: 0.6,
+    },
+    type: 'chat',
+  },
+  {
+    abilities: {
+      functionCall: true,
+      reasoning: true,
+      vision: true,
+    },
+    contextWindowTokens: 1_048_576,
+    description:
+      'Gemini 2.5 Flash 是 Google 最先进的主力模型，专为高级推理、编码、数学和科学任务而设计。它包含内置的“思考”能力，使其能够提供具有更高准确性和细致上下文处理的响应。\n\n注意：此模型有两个变体：思考和非思考。输出定价根据思考能力是否激活而有显著差异。如果您选择标准变体（不带“:thinking”后缀），模型将明确避免生成思考令牌。\n\n要利用思考能力并接收思考令牌，您必须选择“:thinking”变体，这将产生更高的思考输出定价。\n\n此外，Gemini 2.5 Flash 可通过“推理最大令牌数”参数进行配置，如文档中所述 (https://openrouter.ai/docs/use-cases/reasoning-tokens#max-tokens-for-reasoning)。',
+    displayName: 'Gemini 2.5 Flash Preview',
+    id: 'google/gemini-2.5-flash-preview',
+    maxOutput: 65_535,
+    pricing: {
+      input: 0.15,
+      output: 0.6,
+    },
+    type: 'chat',
+  },
+  {
+    abilities: {
+      functionCall: true,
+      reasoning: true,
+      vision: true,
+    },
+    contextWindowTokens: 1_048_576,
+    description:
+      'Gemini 2.5 Flash 是 Google 最先进的主力模型，专为高级推理、编码、数学和科学任务而设计。它包含内置的“思考”能力，使其能够提供具有更高准确性和细致上下文处理的响应。\n\n注意：此模型有两个变体：思考和非思考。输出定价根据思考能力是否激活而有显著差异。如果您选择标准变体（不带“:thinking”后缀），模型将明确避免生成思考令牌。\n\n要利用思考能力并接收思考令牌，您必须选择“:thinking”变体，这将产生更高的思考输出定价。\n\n此外，Gemini 2.5 Flash 可通过“推理最大令牌数”参数进行配置，如文档中所述 (https://openrouter.ai/docs/use-cases/reasoning-tokens#max-tokens-for-reasoning)。',
+    displayName: 'Gemini 2.5 Flash Preview (thinking)',
+    id: 'google/gemini-2.5-flash-preview:thinking',
+    maxOutput: 65_535,
+    pricing: {
+      input: 0.15,
+      output: 3.5,
+    },
     type: 'chat',
   },
   {
@@ -406,6 +537,84 @@ const openrouterChatModels: AIChatModelCard[] = [
   {
     abilities: {
       functionCall: true,
+      reasoning: true,
+    },
+    contextWindowTokens: 163_840,
+    description:
+      'DeepSeek-R1 在仅有极少标注数据的情况下，极大提升了模型推理能力。在输出最终回答之前，模型会先输出一段思维链内容，以提升最终答案的准确性。',
+    displayName: 'DeepSeek R1 0528',
+    id: 'deepseek/deepseek-r1-0528',
+    pricing: {
+      input: 0.5,
+      output: 2.18,
+    },
+    releasedAt: '2025-05-28',
+    type: 'chat',
+  },
+  {
+    abilities: {
+      reasoning: true,
+    },
+    contextWindowTokens: 163_840,
+    description:
+      'DeepSeek-R1 在仅有极少标注数据的情况下，极大提升了模型推理能力。在输出最终回答之前，模型会先输出一段思维链内容，以提升最终答案的准确性。',
+    displayName: 'DeepSeek R1 0528 (Free)',
+    id: 'deepseek/deepseek-r1-0528:free',
+    releasedAt: '2025-05-28',
+    type: 'chat',
+  },
+  {
+    abilities: {
+      reasoning: true,
+    },
+    contextWindowTokens: 163_840,
+    description:
+      'DeepSeek-R1 在仅有极少标注数据的情况下，极大提升了模型推理能力。在输出最终回答之前，模型会先输出一段思维链内容，以提升最终答案的准确性。',
+    displayName: 'DeepSeek R1',
+    id: 'deepseek/deepseek-r1',
+    pricing: {
+      input: 3,
+      output: 8,
+    },
+    releasedAt: '2025-01-20',
+    type: 'chat',
+  },
+  {
+    abilities: {
+      reasoning: true,
+    },
+    contextWindowTokens: 163_840,
+    description:
+      'DeepSeek-R1 在仅有极少标注数据的情况下，极大提升了模型推理能力。在输出最终回答之前，模型会先输出一段思维链内容，以提升最终答案的准确性。',
+    displayName: 'DeepSeek R1 (Free)',
+    id: 'deepseek/deepseek-r1:free',
+    releasedAt: '2025-01-20',
+    type: 'chat',
+  },
+  {
+    contextWindowTokens: 64_000,
+    description:
+      'DeepSeek V3 是一个 685B 参数的专家混合模型，是 DeepSeek 团队旗舰聊天模型系列的最新迭代。\n\n它继承了 [DeepSeek V3](/deepseek/deepseek-chat-v3) 模型，并在各种任务上表现出色。',
+    displayName: 'DeepSeek V3 0324',
+    id: 'deepseek/deepseek-chat-v3-0324',
+    pricing: {
+      cachedInput: 0.07,
+      input: 0.27,
+      output: 1.1,
+    },
+    type: 'chat',
+  },
+  {
+    contextWindowTokens: 163_840,
+    description:
+      'DeepSeek V3 是一个 685B 参数的专家混合模型，是 DeepSeek 团队旗舰聊天模型系列的最新迭代。\n\n它继承了 [DeepSeek V3](/deepseek/deepseek-chat-v3) 模型，并在各种任务上表现出色。',
+    displayName: 'DeepSeek V3 0324 (Free)',
+    id: 'deepseek/deepseek-chat-v3-0324:free',
+    type: 'chat',
+  },
+  {
+    abilities: {
+      functionCall: true,
       vision: true,
     },
     contextWindowTokens: 200_000,
@@ -489,6 +698,50 @@ const openrouterChatModels: AIChatModelCard[] = [
   {
     abilities: {
       functionCall: true,
+      reasoning: true,
+      vision: true,
+    },
+    contextWindowTokens: 200_000,
+    description:
+      'Claude Sonnet 4 可以产生近乎即时的响应或延长的逐步思考，用户可以清晰地看到这些过程。API 用户还可以对模型思考的时间进行细致的控制',
+    displayName: 'Claude Sonnet 4',
+    id: 'anthropic/claude-sonnet-4',
+    maxOutput: 64_000,
+    pricing: {
+      input: 3,
+      output: 15,
+    },
+    releasedAt: '2025-05-23',
+    settings: {
+      extendParams: ['enableReasoning', 'reasoningBudgetToken'],
+    },
+    type: 'chat',
+  },
+  {
+    abilities: {
+      functionCall: true,
+      reasoning: true,
+      vision: true,
+    },
+    contextWindowTokens: 200_000,
+    description:
+      'Claude Opus 4 是 Anthropic 用于处理高度复杂任务的最强大模型。它在性能、智能、流畅性和理解力方面表现卓越。',
+    displayName: 'Claude Opus 4',
+    id: 'anthropic/claude-opus-4',
+    maxOutput: 32_000,
+    pricing: {
+      input: 15,
+      output: 75,
+    },
+    releasedAt: '2025-05-23',
+    settings: {
+      extendParams: ['enableReasoning', 'reasoningBudgetToken'],
+    },
+    type: 'chat',
+  },
+  {
+    abilities: {
+      functionCall: true,
       vision: true,
     },
     contextWindowTokens: 200_000,
@@ -555,50 +808,6 @@ const openrouterChatModels: AIChatModelCard[] = [
       input: 3.5,
       output: 10.5,
     },
-    type: 'chat',
-  },
-  {
-    abilities: {
-      functionCall: true,
-    },
-    contextWindowTokens: 128_000,
-    description:
-      '融合通用与代码能力的全新开源模型, 不仅保留了原有 Chat 模型的通用对话能力和 Coder 模型的强大代码处理能力，还更好地对齐了人类偏好。此外，DeepSeek-V2.5 在写作任务、指令跟随等多个方面也实现了大幅提升。',
-    displayName: 'DeepSeek V2.5',
-    id: 'deepseek/deepseek-chat',
-    pricing: {
-      input: 0.14,
-      output: 0.28,
-    },
-    releasedAt: '2024-09-05',
-    type: 'chat',
-  },
-  {
-    abilities: {
-      reasoning: true,
-    },
-    contextWindowTokens: 163_840,
-    description:
-      'DeepSeek-R1 在仅有极少标注数据的情况下，极大提升了模型推理能力。在输出最终回答之前，模型会先输出一段思维链内容，以提升最终答案的准确性。',
-    displayName: 'DeepSeek R1',
-    id: 'deepseek/deepseek-r1',
-    pricing: {
-      input: 3,
-      output: 8,
-    },
-    releasedAt: '2025-01-20',
-    type: 'chat',
-  },
-  {
-    abilities: {
-      reasoning: true,
-    },
-    contextWindowTokens: 163_840,
-    description:
-      'DeepSeek-R1 在仅有极少标注数据的情况下，极大提升了模型推理能力。在输出最终回答之前，模型会先输出一段思维链内容，以提升最终答案的准确性。',
-    displayName: 'DeepSeek R1 (Free)',
-    id: 'deepseek/deepseek-r1:free',
-    releasedAt: '2025-01-20',
     type: 'chat',
   },
   {
@@ -683,13 +892,13 @@ const openrouterChatModels: AIChatModelCard[] = [
       functionCall: true,
       vision: true,
     },
-    contextWindowTokens: 2_097_152 + 8192,
+    contextWindowTokens: 1_048_576 + 8192,
     description:
-      'Gemini 2.0 Pro Experimental 是 Google 最新的实验性多模态AI模型，与历史版本相比有一定的质量提升，特别是对于世界知识、代码和长上下文。',
-    displayName: 'Gemini 2.0 Pro Experimental 02-05 (Free)',
-    id: 'google/gemini-2.0-pro-exp-02-05:free',
+      'Gemini 2.0 Flash Experimental 是 Google 最新的实验性多模态AI模型，与历史版本相比有一定的质量提升，特别是对于世界知识、代码和长上下文。',
+    displayName: 'Gemini 2.0 Flash Experimental (Free)',
+    id: 'google/gemini-2.0-flash-exp:free',
     maxOutput: 8192,
-    releasedAt: '2025-02-05',
+    releasedAt: '2024-12-11',
     type: 'chat',
   },
 ];
