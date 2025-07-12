@@ -4,13 +4,13 @@ import type { ItemType } from 'antd/es/menu/interface';
 import { LucideArrowRight, LucideBolt } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { PropsWithChildren, memo, useMemo } from 'react';
+import { type ReactNode, memo, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Flexbox } from 'react-layout-kit';
 
 import { ModelItemRender, ProviderItemRender } from '@/components/ModelSelect';
 import { isDeprecatedEdition } from '@/const/version';
-import ActionDropdown from '@/features/ChatInput/components/ActionDropdown';
+import ActionDropdown from '@/features/ChatInput/ActionBar/components/ActionDropdown';
 import { useEnabledChatModels } from '@/hooks/useEnabledChatModels';
 import { useAgentStore } from '@/store/agent';
 import { agentSelectors } from '@/store/agent/slices/chat';
@@ -40,7 +40,14 @@ const useStyles = createStyles(({ css, prefixCls }) => ({
 
 const menuKey = (provider: string, model: string) => `${provider}-${model}`;
 
-const ModelSwitchPanel = memo<PropsWithChildren>(({ children }) => {
+interface IProps {
+  children?: ReactNode;
+  onOpenChange?: (open: boolean) => void;
+  open?: boolean;
+  updating?: boolean;
+}
+
+const ModelSwitchPanel = memo<IProps>(({ children, onOpenChange, open }) => {
   const { t } = useTranslation('components');
   const { styles, theme } = useStyles();
   const [model, provider, updateAgentConfig] = useAgentStore((s) => [
@@ -57,8 +64,8 @@ const ModelSwitchPanel = memo<PropsWithChildren>(({ children }) => {
       const items = provider.children.map((model) => ({
         key: menuKey(provider.id, model.id),
         label: <ModelItemRender {...model} {...model.abilities} />,
-        onClick: () => {
-          updateAgentConfig({ model: model.id, provider: provider.id });
+        onClick: async () => {
+          await updateAgentConfig({ model: model.id, provider: provider.id });
         },
       }));
 
@@ -129,9 +136,12 @@ const ModelSwitchPanel = memo<PropsWithChildren>(({ children }) => {
     }));
   }, [enabledList]);
 
+  const icon = <div className={styles.tag}>{children}</div>;
+
   return (
     <ActionDropdown
       menu={{
+        // @ts-expect-error 等待 antd 修复
         activeKey: menuKey(provider, model),
         className: styles.menu,
         items,
@@ -142,9 +152,11 @@ const ModelSwitchPanel = memo<PropsWithChildren>(({ children }) => {
           overflowY: 'scroll',
         },
       }}
+      onOpenChange={onOpenChange}
+      open={open}
       placement={'topLeft'}
     >
-      <div className={styles.tag}>{children}</div>
+      {icon}
     </ActionDropdown>
   );
 });

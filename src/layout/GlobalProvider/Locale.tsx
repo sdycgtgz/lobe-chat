@@ -40,7 +40,8 @@ const Locale = memo<LocaleLayoutProps>(({ children, defaultLang, antdLocale }) =
 
   // if run on server side, init i18n instance everytime
   if (isOnServerSide) {
-    i18n.init();
+    // use sync mode to init instantly
+    i18n.init({ initAsync: false });
 
     // load the dayjs locale
     // if (lang) {
@@ -88,11 +89,7 @@ const Locale = memo<LocaleLayoutProps>(({ children, defaultLang, antdLocale }) =
       theme={{
         components: {
           Button: {
-            borderRadiusSM: 6,
             contentFontSizeSM: 12,
-            defaultActiveBorderColor: theme.colorBorder,
-            defaultActiveColor: theme.colorText,
-            groupBorderColor: theme.colorBorder,
           },
           DatePicker: {
             activeBorderColor: theme.colorBorder,
@@ -113,10 +110,6 @@ const Locale = memo<LocaleLayoutProps>(({ children, defaultLang, antdLocale }) =
           Select: {
             activeBorderColor: theme.colorBorder,
             hoverBorderColor: theme.colorBorder,
-          },
-          Typography: {
-            titleMarginBottom: 0,
-            titleMarginTop: 0,
           },
         },
       }}

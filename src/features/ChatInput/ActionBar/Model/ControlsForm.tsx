@@ -11,7 +11,10 @@ import { agentChatConfigSelectors, agentSelectors } from '@/store/agent/selector
 import { aiModelSelectors, useAiInfraStore } from '@/store/aiInfra';
 
 import ContextCachingSwitch from './ContextCachingSwitch';
+import ReasoningEffortSlider from './ReasoningEffortSlider';
 import ReasoningTokenSlider from './ReasoningTokenSlider';
+import ThinkingBudgetSlider from './ThinkingBudgetSlider';
+import ThinkingSlider from './ThinkingSlider';
 
 const ControlsForm = memo(() => {
   const { t } = useTranslation('chat');
@@ -77,6 +80,38 @@ const ControlsForm = memo(() => {
       layout: 'vertical',
       minWidth: undefined,
       name: 'reasoningBudgetToken',
+      style: {
+        paddingBottom: 0,
+      },
+    },
+    {
+      children: <ReasoningEffortSlider />,
+      desc: 'reasoning_effort',
+      label: t('extendParams.reasoningEffort.title'),
+      layout: 'horizontal',
+      minWidth: undefined,
+      name: 'reasoningEffort',
+      style: {
+        paddingBottom: 0,
+      },
+    },
+    {
+      children: <ThinkingBudgetSlider />,
+      label: t('extendParams.reasoningBudgetToken.title'),
+      layout: 'vertical',
+      minWidth: 500,
+      name: 'thinkingBudget',
+      style: {
+        paddingBottom: 0,
+      },
+      tag: 'thinkingBudget',
+    },
+    {
+      children: <ThinkingSlider />,
+      label: t('extendParams.thinking.title'),
+      layout: 'horizontal',
+      minWidth: undefined,
+      name: 'thinking',
       style: {
         paddingBottom: 0,
       },

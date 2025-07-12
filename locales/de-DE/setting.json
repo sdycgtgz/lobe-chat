@@ -129,6 +129,7 @@
     "waitingForMore": "Weitere Modelle werden <1>geplant</1>, bitte freuen Sie sich auf weitere Updates"
   },
   "plugin": {
+    "addMCPPlugin": "MCP-Plugin hinzufügen",
     "addTooltip": "Benutzerdefiniertes Plugin",
     "clearDeprecated": "Entfernen Sie ungültige Plugins",
     "empty": "Keine installierten Plugins vorhanden. Besuchen Sie den <1>Plugin-Store</1>, um mehr zu entdecken.",
@@ -169,6 +170,20 @@
       "title": "Tag"
     },
     "title": "Assistenteninformationen"
+  },
+  "settingAppearance": {
+    "neutralColor": {
+      "desc": "Anpassung der Graustufen mit unterschiedlichen Farbneigungen",
+      "title": "Neutrale Farben"
+    },
+    "preview": {
+      "title": "Farbauswahl"
+    },
+    "primaryColor": {
+      "desc": "Benutzerdefinierte Hauptfarbe",
+      "title": "Hauptfarbe"
+    },
+    "title": "Anwendungsdesign"
   },
   "settingChat": {
     "autoCreateTopicThreshold": {
@@ -212,12 +227,53 @@
     "submit": "Chat-Präferenzen aktualisieren",
     "title": "Chat-Einstellungen"
   },
+  "settingChatAppearance": {
+    "fontSize": {
+      "desc": "Schriftgröße des Chatinhalts",
+      "marks": {
+        "normal": "Standard"
+      },
+      "title": "Schriftgröße"
+    },
+    "highlighterTheme": {
+      "title": "Code-Hervorhebungsthema"
+    },
+    "mermaidTheme": {
+      "title": "Mermaid-Thema"
+    },
+    "title": "Chatdesign",
+    "transitionMode": {
+      "desc": "Übergangsanimation der Chatnachrichten",
+      "options": {
+        "fadeIn": "Einblenden",
+        "none": {
+          "desc": "Dies hängt von der Art der Antwort des Modells ab, bitte testen Sie es selbst.",
+          "value": "Keine"
+        },
+        "smooth": "Sanft"
+      },
+      "title": "Übergangsanimation"
+    }
+  },
+  "settingCommon": {
+    "lang": {
+      "autoMode": "System folgen",
+      "title": "Sprache"
+    },
+    "themeMode": {
+      "auto": "Automatisch",
+      "dark": "Dunkel",
+      "light": "Hell",
+      "title": "Thema"
+    },
+    "title": "Allgemeine Einstellungen"
+  },
   "settingModel": {
     "enableMaxTokens": {
       "title": "Maximale Token pro Antwort aktivieren"
     },
     "enableReasoningEffort": {
-      "title": "Aktivieren Sie die Anpassung der Schlussfolgerungsintensität"
+      "title": "Aktivieren der Anpassung der Schlussfolgerungsintensität"
     },
     "frequencyPenalty": {
       "desc": "Je höher der Wert, desto vielfältiger und abwechslungsreicher die Wortwahl; je niedriger der Wert, desto einfacher und schlichter die Wortwahl",
@@ -239,7 +295,7 @@
       "title": "Ausdrucksvielfalt"
     },
     "reasoningEffort": {
-      "desc": "Je höher der Wert, desto stärker die Schlussfolgerungsfähigkeit, aber dies kann die Antwortzeit und den Tokenverbrauch erhöhen.",
+      "desc": "Je höher der Wert, desto stärker die Schlussfolgerungsfähigkeit, kann jedoch die Antwortzeit und den Token-Verbrauch erhöhen",
       "options": {
         "high": "Hoch",
         "low": "Niedrig",
@@ -336,37 +392,6 @@
       "preview": "Stimme anhören",
       "title": "Sprachsynthese-Stimme"
     }
-  },
-  "settingTheme": {
-    "avatar": {
-      "title": "Profilbild"
-    },
-    "fontSize": {
-      "desc": "Schriftgröße für Chat-Inhalte",
-      "marks": {
-        "normal": "Normal"
-      },
-      "title": "Schriftgröße"
-    },
-    "lang": {
-      "autoMode": "Systemsprache folgen",
-      "title": "Sprache"
-    },
-    "neutralColor": {
-      "desc": "Benutzerdefinierte Graustufen für verschiedene Farbneigungen",
-      "title": "Neutralfarbe"
-    },
-    "primaryColor": {
-      "desc": "Benutzerdefinierte Hauptfarbe des Themas",
-      "title": "Hauptfarbe"
-    },
-    "themeMode": {
-      "auto": "Automatisch",
-      "dark": "Dunkel",
-      "light": "Hell",
-      "title": "Thema"
-    },
-    "title": "Thema einstellen"
   },
   "storage": {
     "actions": {
